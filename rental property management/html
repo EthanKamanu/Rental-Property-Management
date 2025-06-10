@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentEase - Property Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for enhancements */
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        #chart-container {
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-indigo-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center justify-between border-b border-indigo-700">
+                <div class="flex items-center">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="sidebar-text ml-3 text-xl font-bold">KANORERO FLATS</span>
+                </div>
+                <button id="toggle-sidebar" class="text-white focus:outline-none">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+                <nav class="p-4">
+                    <div class="mb-6">
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Dashboard</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#dashboard" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span class="sidebar-text ml-3">Overview</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#properties" class="flex items-center p-2 rounded bg-indigo-700">
+                                    <i class="fas fa-building"></i>
+                                    <span class="sidebar-text ml-3">Properties</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#tenants" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-users"></i>
+                                    <span class="sidebar-text ml-3">Tenants</span>
+                                </a>
+                            </li>
+                            
+                            <li class="mb-2">
+                                <a href="#maintenance" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-tools"></i>
+                                    <span class="sidebar-text ml-3">Maintenance</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#finance" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span class="sidebar-text ml-3">Finance</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mb-6">
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Reports</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#reports" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span class="sidebar-text ml-3">Analytics</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#expenses" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-receipt"></i>
+                                    <span class="sidebar-text ml-3">Expenses</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Settings</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#settings" class="flex items-center p-2 rounded hover:bg-indigo-700">
+                                    <i class="fas fa-cog"></i>
+                                    <span class="sidebar-text ml-3">Account Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <div class="p-4 border-t border-indigo-700">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Profile" class="w-10 h-10 rounded-full">
+                    <div class="sidebar-text ml-3">
+                        <p class="text-sm font-semibold">HEZEKIEL KAMANU</p>
+                        <p class="text-xs text-indigo-300">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <h1 class="text-2xl font-semibold text-gray-800">Property Management</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative">
+                            <button class="relative text-gray-500 focus:outline-none">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Total Properties</p>
+                                <h3 class="text-2xl font-bold">12</h3>
+                            </div>
+                            <div class="bg-indigo-100 p-3 rounded-full">
+                                <i class="fas fa-home text-indigo-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm font-semibold">
+                                <i class="fas fa-arrow-up mr-1"></i> 12.5%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Occupied Units</p>
+                                <h3 class="text-2xl font-bold">84</h3>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-user-check text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm font-semibold">
+                                <i class="fas fa-arrow-up mr-1"></i> 5.3%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Monthly Revenue</p>
+                                <h3 class="text-2xl font-bold">2,700,000 KSH</h3>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm font-semibold">
+                                <i class="fas fa-arrow-up mr-1"></i> 8.2%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">vs last month</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Maintenance Requests</p>
+                                <h3 class="text-2xl font-bold">5</h3>
+                            </div>
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <i class="fas fa-tools text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-red-500 text-sm font-semibold">
+                                <i class="fas fa-arrow-down mr-1"></i> 2.1%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">vs last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Properties List</h2>
+                    <div class="flex space-x-4">
+                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Property
+                        </button>
+                        <button class="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-filter mr-2"></i> Filter
+                        </button>
+                        <button class="border border-gray-300 hover:bg-gray-50 text-gray-600 px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-download mr-2"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Property Card 1 -->
+                    <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Property" class="w-full h-48 object-cover">
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    Rented
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 left-3 flex space-x-2">
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bed mr-1"></i> 3
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bath mr-1"></i> 2
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-ruler-combined mr-1"></i> 3 BEDROOM
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg">H1-16</h4>
+                                    <p class="text-gray-500 text-sm flex items-center mt-1">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> Kahawa West, Kasarani
+                                    </p>
+                                </div>
+                                <p class="text-indigo-600 font-bold">45,000KSH/mo</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex justify-between items-center">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Details</a>
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-indigo-600">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-red-600">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 2 -->
+                    <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Property" class="w-full h-48 object-cover">
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    Vacant
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 left-3 flex space-x-2">
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bed mr-1"></i> 4
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bath mr-1"></i> 3
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-ruler-combined mr-1"></i> 2 BEDROOM
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg">H1-11</h4>
+                                    <p class="text-gray-500 text-sm flex items-center mt-1">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> Kahawa West, Kasarani
+                                    </p>
+                                </div>
+                                <p class="text-indigo-600 font-bold">35,000KSH/mo</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex justify-between items-center">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Details</a>
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-indigo-600">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-red-600">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 3 -->
+                    <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Property" class="w-full h-48 object-cover">
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                    Rented
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 left-3 flex space-x-2">
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bed mr-1"></i> 2
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-bath mr-1"></i> 1
+                                </span>
+                                <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded flex items-center">
+                                    <i class="fas fa-ruler-combined mr-1"></i> 1 BEDROOM
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg">H3-88</h4>
+                                    <p class="text-gray-500 text-sm flex items-center mt-1">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> Kahawa West, Kasarani
+                                    </p>
+                                </div>
+                                <p class="text-indigo-600 font-bold">12,000KSH/mo</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex justify-between items-center">
+                                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Details</a>
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-indigo-600">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-red-600">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Chart -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Recent Payments -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-semibold text-gray-700">Recent Payments</h2>
+                            <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="text-left text-sm font-medium text-gray-500 border-b">
+                                        <th class="py-3 px-4">Tenant</th>
+                                        <th class="py-3 px-4">Property</th>
+                                        <th class="py-3 px-4">Amount</th>
+                                        <th class="py-3 px-4">Date</th>
+                                        <th class="py-3 px-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="py-3 px-4 text-sm">Wise Munene</td>
+                                        <td class="py-3 px-4 text-sm">H1-16</td>
+                                        <td class="py-3 px-4 text-sm font-medium">45,000KSH</td>
+                                        <td class="py-3 px-4 text-sm">May 15, 2025</td>
+                                        <td class="py-3 px-4">
+                                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Paid</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="py-3 px-4 text-sm">Grace Wanjiku</td>
+                                        <td class="py-3 px-4 text-sm">H1-11</td>
+                                        <td class="py-3 px-4 text-sm font-medium">35,000KSH</td>
+                                        <td class="py-3 px-4 text-sm">May 14, 2025</td>
+                                        <td class="py-3 px-4">
+                                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Paid</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="py-3 px-4 text-sm">Rayhab Njeri</td>
+                                        <td class="py-3 px-4 text-sm">H1-11</td>
+                                        <td class="py-3 px-4 text-sm font-medium">35,000KSH</td>
+                                        <td class="py-3 px-4 text-sm">May 12, 2025</td>
+                                        <td class="py-3 px-4">
+                                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">Overdue</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="py-3 px-4 text-sm">Julius Irungu</td>
+                                        <td class="py-3 px-4 text-sm">H1-16</td>
+                                        <td class="py-3 px-4 text-sm font-medium">45,000KSH</td>
+                                        <td class="py-3 px-4 text-sm">May 10, 2025</td>
+                                        <td class="py-3 px-4">
+                                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">Overdue</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-semibold text-gray-700">Monthly Revenue</h2>
+                            <div class="flex space-x-2">
+                                <button class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">2024</button>
+                                <button class="text-gray-500 hover:text-indigo-600 text-sm">2023</button>
+                            </div>
+                        </div>
+                        <div id="chart-container">
+                            <!-- Chart will be rendered here -->
+                            <canvas id="revenueChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Requests -->
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-semibold text-gray-700">Recent Maintenance Requests</h2>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View All</a>
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Request 1 -->
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg">
+                            <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-tools text-yellow-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h4 class="font-medium">Plumbing Issue - Leaky Faucet</h4>
+                                    <span class="text-xs text-yellow-600">In Progress</span>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">Bathroom sink is leaking and needs to be fixed</p>
+                                <div class="flex justify-between mt-2">
+                                    <p class="text-xs text-gray-400">Property: H1-16</p>
+                                    <p class="text-xs text-gray-400">May 12, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Request 2 -->
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h4 class="font-medium">Repainting</h4>
+                                    <span class="text-xs text-green-600">Completed</span>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">Broken window</p>
+                                <div class="flex justify-between mt-2">
+                                    <p class="text-xs text-gray-400">Property: H1-11</p>
+                                    <p class="text-xs text-gray-400">May 8, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Request 3 -->
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg">
+                            <div class="bg-red-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-exclamation text-red-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h4 class="font-medium">Broken Window</h4>
+                                    <span class="text-xs text-red-600">Urgent</span>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">Living room window broken</p>
+                                <div class="flex justify-between mt-2">
+                                    <p class="text-xs text-gray-400">Property: H3-88</p>
+                                    <p class="text-xs text-gray-400">May 17, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Toggle sidebar
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            const icon = this.querySelector('i');
+            if (document.getElementById('sidebar').classList.contains('collapsed')) {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+            }
+        });
+
+        // Chart initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [2500000, 2600000, 2900000, 3400000, 3100000, 0, 0],
+                        backgroundColor: '#6366F1',
+                        borderRadius: 4,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#E5E7EB'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'KSH' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Sample property data (could be replaced with API calls in a real application)
+        const properties = [
+            {
+                id: 1,
+                title: "H1-16",
+                location: "Kahawa West, Kasarani",
+                price: 45000,
+                beds: 3,
+                baths: 2,
+
+                status: "Rented",
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6"
+            }
+            // More properties would be added here
+        ];
+    </script>
+</body>
+</html>
