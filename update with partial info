@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentEase - Property Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for enhancements */
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        #chart-container {
+            height: 300px;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-indigo-800 text-white w-64 flex flex-col">
+            <div class="p-4 flex items-center justify-between border-b border-indigo-700">
+                <div class="flex items-center">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="sidebar-text ml-3 text-xl font-bold">KANORERO FLATS</span>
+                </div>
+                <button id="toggle-sidebar" class="text-white focus:outline-none" aria-label="Toggle sidebar" title="Collapse/expand sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+                <nav class="p-4">
+                    <div class="mb-6">
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Dashboard</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#dashboard" class="nav-link flex items-center p-2 rounded bg-indigo-700" data-section="dashboard">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span class="sidebar-text ml-3">Overview</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#properties" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="properties">
+                                    <i class="fas fa-building"></i>
+                                    <span class="sidebar-text ml-3">Properties</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#tenants" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="tenants">
+                                    <i class="fas fa-users"></i>
+                                    <span class="sidebar-text ml-3">Tenants</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#maintenance" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="maintenance">
+                                    <i class="fas fa-tools"></i>
+                                    <span class="sidebar-text ml-3">Maintenance</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#finance" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="finance">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span class="sidebar-text ml-3">Finance</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mb-6">
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Reports</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#reports" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="reports">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span class="sidebar-text ml-3">Analytics</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="sidebar-text uppercase text-xs text-indigo-300 font-semibold mb-3">Settings</p>
+                        <ul>
+                            <li class="mb-2">
+                                <a href="#settings" class="nav-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="settings">
+                                    <i class="fas fa-cog"></i>
+                                    <span class="sidebar-text ml-3">Account Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <div class="p-4 border-t border-indigo-700">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Profile" class="w-10 h-10 rounded-full">
+                    <div class="sidebar-text ml-3">
+                        <p class="text-sm font-semibold">HEZEKIEL KAMANU</p>
+                        <p class="text-xs text-indigo-300">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between p-4">
+                    <h1 class="text-2xl font-semibold text-gray-800">Property Management</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search properties..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative">
+                            <button class="relative text-gray-500 focus:outline-none" aria-label="Notifications" title="View notifications">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="p-6">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section active">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Total Properties</p>
+                                    <h3 class="text-2xl font-bold">12</h3>
+                                </div>
+                                <div class="bg-indigo-100 p-3 rounded-full">
+                                    <i class="fas fa-home text-indigo-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Occupied Units</p>
+                                    <h3 class="text-2xl font-bold">84</h3>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i class="fas fa-user-check text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Monthly Revenue</p>
+                                    <h3 class="text-2xl font-bold">2,700,000 KSH</h3>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500">Maintenance Requests</p>
+                                    <h3 class="text-2xl font-bold">5</h3>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <i class="fas fa-tools text-yellow-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Property Card 1 -->
+                        <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6" alt="Property" class="w-full h-48 object-cover">
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Rented</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3 flex space-x-2">
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">3 Bed</span>
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">2 Bath</span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-semibold text-lg">H1-16</h4>
+                                        <p class="text-gray-500 text-sm">Kahawa West, Kasarani</p>
+                                    </div>
+                                    <p class="text-indigo-600 font-bold">45,000KSH/mo</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Card 2 -->
+                        <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914" alt="Property" class="w-full h-48 object-cover">
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">Vacant</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3 flex space-x-2">
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">4 Bed</span>
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">3 Bath</span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-semibold text-lg">H1-11</h4>
+                                        <p class="text-gray-500 text-sm">Kahawa West, Kasarani</p>
+                                    </div>
+                                    <p class="text-indigo-600 font-bold">35,000KSH/mo</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Card 3 -->
+                        <div class="property-card bg-white rounded-lg shadow overflow-hidden transition duration-300">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Property" class="w-full h-48 object-cover">
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Rented</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3 flex space-x-2">
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">2 Bed</span>
+                                    <span class="bg-white text-gray-800 text-xs font-semibold px-2 py-1 rounded">1 Bath</span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-semibold text-lg">H3-88</h4>
+                                        <p class="text-gray-500 text-sm">Kahawa West, Kasarani</p>
+                                    </div>
+                                    <p class="text-indigo-600 font-bold">12,000KSH/mo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">Monthly Revenue</h2>
+                        <div id="chart-container">
+                            <canvas id="revenueChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Properties Section -->
+                <div id="properties-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Properties Management</h2>
+                    <p class="text-gray-600">Manage your property listings here.</p>
+                </div>
+
+                <!-- Tenants Section -->
+                <div id="tenants-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Tenant Management</h2>
+                    <p class="text-gray-600">Manage your tenants and lease agreements here.</p>
+                </div>
+
+                <!-- Maintenance Section -->
+                <div id="maintenance-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Maintenance Requests</h2>
+                    <p class="text-gray-600">Track and manage maintenance requests here.</p>
+                </div>
+
+                <!-- Finance Section -->
+                <div id="finance-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Financial Management</h2>
+                    <p class="text-gray-600">Track rent payments and expenses here.</p>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reports-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Analytics & Reports</h2>
+                    <p class="text-gray-600">View detailed analytics and reports here.</p>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings-section" class="section">
+                    <h2 class="text-2xl font-bold mb-4">Account Settings</h2>
+                    <p class="text-gray-600">Manage your account settings here.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-chevron-left');
+                        icon.classList.add('fa-chevron-right');
+                    } else {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-chevron-left');
+                    }
+                });
+            }
+
+            // Navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('bg-indigo-700'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('bg-indigo-700');
+                    
+                    // Hide all sections
+                    const sections = document.querySelectorAll('.section');
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show target section
+                    const targetSection = this.getAttribute('data-section');
+                    const section = document.getElementById(targetSection + '-section');
+                    if (section) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const propertyCards = document.querySelectorAll('.property-card');
+                    propertyCards.forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                    });
+                });
+            }
+
+            // Chart initialization
+            const chartCanvas = document.getElementById('revenueChart');
+            if (chartCanvas && typeof Chart !== 'undefined') {
+                const ctx = chartCanvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Monthly Revenue (KSH)',
+                            data: [2700000, 2850000, 2900000, 2750000, 2700000, 2800000],
+                            backgroundColor: '#6366F1',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'KSH' + (value / 1000000).toFixed(1) + 'M';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
