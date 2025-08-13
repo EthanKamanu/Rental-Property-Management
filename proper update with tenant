@@ -6,29 +6,157 @@
     <title>RentEase - Property Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom CSS for enhancements */
-        .sidebar {
-            transition: all 0.3s ease;
+        /* Custom CSS for enhanced design */
+        * {
+            font-family: 'Inter', sans-serif;
         }
+        
+        .sidebar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
         .sidebar.collapsed {
             width: 70px;
         }
+        
         .sidebar.collapsed .sidebar-text {
             display: none;
         }
+        
+        .property-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
         .property-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
-        #chart-container {
-            height: 300px;
+        
+        .stat-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
         .section {
             display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
+        
         .section.active {
             display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .chart-container {
+            height: 400px;
+            position: relative;
+        }
+        
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
+        .status-indicator {
+            position: relative;
+        }
+        
+        .status-indicator::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        
+        .status-paid::before { background-color: #10b981; }
+        .status-pending::before { background-color: #f59e0b; }
+        .status-overdue::before { background-color: #ef4444; }
+        .status-completed::before { background-color: #10b981; }
+        .status-in-progress::before { background-color: #3b82f6; }
+        
+        .search-highlight {
+            background-color: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        
+        .dark-mode img {
+            filter: invert(1) hue-rotate(180deg);
         }
     </style>
 </head>
@@ -274,7 +402,7 @@
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-800">H1-16 - John Mwangi</p>
+                                        <p class="font-medium text-gray-800">H1-16 - Rayhab Njeri</p>
                                         <p class="text-sm text-gray-500">Rent Payment - March 2024</p>
                                     </div>
                                     <div class="text-right">
@@ -284,7 +412,7 @@
                                 </div>
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-800">H3-88 - Sarah Wanjiku</p>
+                                        <p class="font-medium text-gray-800">H3-88 - Grace Wanjiku</p>
                                         <p class="text-sm text-gray-500">Rent Payment - March 2024</p>
                                     </div>
                                     <div class="text-right">
@@ -294,7 +422,7 @@
                                 </div>
                                 <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-800">H1-11 - Michael Kamau</p>
+                                        <p class="font-medium text-gray-800">H1-11 - Wise Munene</p>
                                         <p class="text-sm text-gray-500">Rent Payment - March 2024</p>
                                     </div>
                                     <div class="text-right">
@@ -304,7 +432,7 @@
                                 </div>
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-800">H2-45 - Grace Njeri</p>
+                                        <p class="font-medium text-gray-800">H1-16 - Ngotho Njoki</p>
                                         <p class="text-sm text-gray-500">Rent Payment - March 2024</p>
                                     </div>
                                     <div class="text-right">
@@ -342,7 +470,7 @@
                                 </div>
                                 <div class="flex items-start justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-800">H2-45 - AC Repair</p>
+                                        <p class="font-medium text-gray-800">H1-16 - AC Repair</p>
                                         <p class="text-sm text-gray-500">Air conditioning not cooling</p>
                                         <p class="text-xs text-green-600 mt-1">Completed today</p>
                                     </div>
@@ -377,8 +505,74 @@
 
                 <!-- Tenants Section -->
                 <div id="tenants-section" class="section">
-                    <h2 class="text-2xl font-bold mb-4">Tenant Management</h2>
-                    <p class="text-gray-600">Manage your tenants and lease agreements here.</p>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Tenant Management</h2>
+                        <button id="add-tenant-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                            <i class="fas fa-plus mr-2"></i>Add Tenant
+                        </button>
+                    </div>
+
+                    <!-- Add/Edit Tenant Modal -->
+                    <div id="tenant-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+                        <div class="flex items-center justify-center min-h-screen p-4">
+                            <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                                <h3 id="modal-title" class="text-lg font-semibold mb-4">Add New Tenant</h3>
+                                <form id="tenant-form">
+                                    <input type="hidden" id="tenant-id">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                        <input type="text" id="tenant-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">ID Number</label>
+                                        <input type="text" id="tenant-id-number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                        <input type="tel" id="tenant-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">House Occupied</label>
+                                        <select id="tenant-house" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                            <option value="">Select House</option>
+                                            <option value="H1-16">H1-16</option>
+                                            <option value="H1-11">H1-11</option>
+                                            <option value="H3-88">H3-88</option>
+                                            <option value="H2-45">H2-45</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" id="cancel-btn" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Save Tenant</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tenants List -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Number</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">House</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tenants-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Tenants will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="no-tenants" class="text-center py-8 text-gray-500 hidden">
+                            <i class="fas fa-users text-4xl mb-2"></i>
+                            <p>No tenants added yet. Click "Add Tenant" to get started.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Maintenance Section -->
@@ -503,6 +697,150 @@
                 });
             }
         });
+    </script>
+    <script>
+        // Tenant Management System
+        let tenants = JSON.parse(localStorage.getItem('tenants')) || [];
+        
+        // DOM Elements
+        const addTenantBtn = document.getElementById('add-tenant-btn');
+        const tenantModal = document.getElementById('tenant-modal');
+        const tenantForm = document.getElementById('tenant-form');
+        const tenantsList = document.getElementById('tenants-list');
+        const noTenants = document.getElementById('no-tenants');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const modalTitle = document.getElementById('modal-title');
+        
+        // Form Elements
+        const tenantIdInput = document.getElementById('tenant-id');
+        const tenantNameInput = document.getElementById('tenant-name');
+        const tenantIdNumberInput = document.getElementById('tenant-id-number');
+        const tenantPhoneInput = document.getElementById('tenant-phone');
+        const tenantHouseInput = document.getElementById('tenant-house');
+        
+        // Event Listeners
+        addTenantBtn.addEventListener('click', openAddModal);
+        cancelBtn.addEventListener('click', closeModal);
+        tenantForm.addEventListener('submit', handleTenantSubmit);
+        
+        // Close modal when clicking outside
+        tenantModal.addEventListener('click', (e) => {
+            if (e.target === tenantModal) {
+                closeModal();
+            }
+        });
+        
+        // Initialize tenant display
+        displayTenants();
+        
+        function openAddModal() {
+            modalTitle.textContent = 'Add New Tenant';
+            tenantForm.reset();
+            tenantIdInput.value = '';
+            tenantModal.classList.remove('hidden');
+        }
+        
+        function openEditModal(tenant) {
+            modalTitle.textContent = 'Edit Tenant';
+            tenantIdInput.value = tenant.id;
+            tenantNameInput.value = tenant.name;
+            tenantIdNumberInput.value = tenant.idNumber;
+            tenantPhoneInput.value = tenant.phone;
+            tenantHouseInput.value = tenant.house;
+            tenantModal.classList.remove('hidden');
+        }
+        
+        function closeModal() {
+            tenantModal.classList.add('hidden');
+            tenantForm.reset();
+        }
+        
+        function handleTenantSubmit(e) {
+            e.preventDefault();
+            
+            const tenantData = {
+                id: tenantIdInput.value || Date.now().toString(),
+                name: tenantNameInput.value,
+                idNumber: tenantIdNumberInput.value,
+                phone: tenantPhoneInput.value,
+                house: tenantHouseInput.value,
+                createdAt: tenantIdInput.value ? null : new Date().toISOString()
+            };
+            
+            if (tenantIdInput.value) {
+                // Update existing tenant
+                const index = tenants.findIndex(t => t.id === tenantIdInput.value);
+                if (index !== -1) {
+                    tenants[index] = { ...tenants[index], ...tenantData };
+                }
+            } else {
+                // Add new tenant
+                tenants.push(tenantData);
+            }
+            
+            saveTenants();
+            displayTenants();
+            closeModal();
+        }
+        
+        function deleteTenant(id) {
+            if (confirm('Are you sure you want to delete this tenant?')) {
+                tenants = tenants.filter(tenant => tenant.id !== id);
+                saveTenants();
+                displayTenants();
+            }
+        }
+        
+        function saveTenants() {
+            localStorage.setItem('tenants', JSON.stringify(tenants));
+        }
+        
+        function displayTenants() {
+            if (tenants.length === 0) {
+                noTenants.classList.remove('hidden');
+                tenantsList.innerHTML = '';
+                return;
+            }
+            
+            noTenants.classList.add('hidden');
+            tenantsList.innerHTML = tenants.map(tenant => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                    <span class="text-indigo-600 font-medium">${tenant.name.charAt(0)}</span>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${tenant.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${tenant.idNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${tenant.phone}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            ${tenant.house}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="openEditModal('${tenant.id}', '${tenant.name.replace(/'/g, "\\'")}', '${tenant.idNumber}', '${tenant.phone}', '${tenant.house}')" 
+                                class="text-indigo-600 hover:text-indigo-900 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteTenant('${tenant.id}')" 
+                                class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Make functions globally available
+        window.openEditModal = openEditModal;
+        window.deleteTenant = deleteTenant;
     </script>
 </body>
 </html>
