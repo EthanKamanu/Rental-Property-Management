@@ -407,14 +407,39 @@ class FinanceManager {
     handlePaymentSubmit(e) {
         e.preventDefault();
         
+        // Prevent duplicate submissions
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        if (submitButton.disabled) return;
+        
+        submitButton.disabled = true;
+        
+        const tenantId = document.getElementById('payment-tenant-id').value;
+        const amount = parseFloat(document.getElementById('payment-amount').value);
+        const date = document.getElementById('payment-date').value;
+        
+        // Check for duplicate payment in the last 5 seconds
+        const recentPayment = this.payments.find(p => 
+            p.tenantId === tenantId && 
+            p.amount === amount && 
+            p.date === date &&
+            new Date() - new Date(p.createdAt) < 5000
+        );
+        
+        if (recentPayment) {
+            alert('This payment has already been processed. Please check the payment history.');
+            submitButton.disabled = false;
+            return;
+        }
+        
         const payment = {
-            id: Date.now().toString(),
-            tenantId: document.getElementById('payment-tenant-id').value,
-            amount: parseFloat(document.getElementById('payment-amount').value),
-            date: document.getElementById('payment-date').value,
+            id: Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9),
+            tenantId: tenantId,
+            amount: amount,
+            date: date,
             method: document.getElementById('payment-method').value,
             notes: document.getElementById('payment-notes').value,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            status: 'completed'
         };
         
         this.payments.push(payment);
@@ -422,6 +447,9 @@ class FinanceManager {
         
         this.displayTenants();
         this.closePaymentModal();
+        
+        // Re-enable submit button
+        submitButton.disabled = false;
     }
 }
 
